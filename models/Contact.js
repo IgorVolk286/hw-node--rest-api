@@ -20,9 +20,15 @@ const contactSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "user",
+    },
   },
   { versionKey: false, timestamps: true }
 );
+
 contactSchema.post("save", (error, data, next) => {
   error.status = 400;
   next();
@@ -31,6 +37,7 @@ contactSchema.post("findOneAndUpdate", (error, data, next) => {
   error.status = 400;
   next();
 });
+
 contactSchema.pre("findOneAndUpdate", function (next) {
   this.options.new = true;
   this.options.runValidators = true;

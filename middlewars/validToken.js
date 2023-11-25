@@ -23,6 +23,7 @@ const validToken = async (req, res, next) => {
     if (!user) {
       return next(HttpErr(401, "Not authorized"));
     }
+    req.user = user;
     next();
   } catch (error) {
     next(HttpErr(401, error.message));

@@ -9,7 +9,8 @@ const {
 
 const getAllContacts = async (req, res, next) => {
   try {
-    const result = await Contact.find();
+    const { _id: owner } = req.user;
+    const result = await Contact.find({ owner }, "name email phone");
     res.status(200).json(result);
   } catch (error) {
     next(error);
@@ -18,8 +19,9 @@ const getAllContacts = async (req, res, next) => {
 
 const getContactById = async (req, res, next) => {
   try {
+    const { _id: owner } = req.user;
     const { contactId } = req.params;
-    const result = await Contact.findById(contactId);
+    const result = await Contact.findIne({ _id: contactId, owner });
     if (!result) {
       throw HttpErr(404, `Contact with id ${contactId} not found`);
     }
@@ -35,7 +37,8 @@ const addNewContact = async (req, res, next) => {
     if (error) {
       throw HttpErr(404, error.message);
     }
-    const result = await Contact.create(req.body);
+    const { _id: owner } = req.user;
+    const result = await Contact.create({ ...req.body, owner });
     res.status(201).json(result);
   } catch (error) {
     next(error);
@@ -44,8 +47,9 @@ const addNewContact = async (req, res, next) => {
 
 const deleteById = async (req, res, next) => {
   try {
+    const { _id: owner } = req.user;
     const { contactId } = req.params;
-    const result = await Contact.findByIdAndDelete(contactId);
+    const result = await Contact.findOneAndDelete({ _id: contactId, owner });
     if (!result) {
       throw HttpErr(404, `Contact with id ${contactId} not found`);
     }
@@ -57,6 +61,7 @@ const deleteById = async (req, res, next) => {
 
 const updateContact = async (req, res, next) => {
   try {
+    const { _id: owner } = req.user;
     const { contactId } = req.params;
     console.log(req.params);
     const { error } = updateContactChema.validate(req.body);
@@ -64,10 +69,14 @@ const updateContact = async (req, res, next) => {
       throw HttpErr(404, error.message);
     }
 
-    const result = await Contact.findByIdAndUpdate(contactId, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const result = await Contact.findOneAndUpdate(
+      { _id: contactId, owner },
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     res.json(result);
   } catch (error) {
     next(error);
@@ -75,6 +84,7 @@ const updateContact = async (req, res, next) => {
 };
 const updateStatusContact = async (req, res, next) => {
   try {
+    const { _id: owner } = req.user;
     const { contactId } = req.params;
     console.log(req.params);
     const { error } = updateContactChema.validate(req.body);
@@ -82,10 +92,14 @@ const updateStatusContact = async (req, res, next) => {
       throw HttpErr(404, "missing field favorite");
     }
 
-    const result = await Contact.findByIdAndUpdate(contactId, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const result = await Contact.findOneAndUpdate(
+      { _id: contactId, owner },
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     res.status(200).json(result);
   } catch (error) {
     next(error);
