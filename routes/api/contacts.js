@@ -3,11 +3,14 @@ const controllers = require("../../controllers/contacts-controllers.js");
 const isEmptyBody = require("../../middlewars/isEmptyBody.js");
 const router = express.Router();
 const isValidId = require("../../middlewars/isValidId.js");
+const validToken = require("../../middlewars/validToken.js");
 const {
   updateContactChema,
   updateFavoriteChema,
 } = require("../../models/Contact.js");
 const validateBody = require("../../helpers/validationBody.js");
+
+router.use(validToken);
 
 router.get("/", controllers.getAllContacts);
 

@@ -9,7 +9,7 @@ const validateBody = require("../helpers/validationBody.js");
 // } = require("../models/User.js");
 const { singup, singin } = require("../controllers/auth-controllers.js");
 const { userSingupSchema, userSinginSchema } = require("../models/User.js");
-
+// const validToken = require("../middlewars/validToken.js");
 const authRouter = express.Router();
 
 authRouter.post(
