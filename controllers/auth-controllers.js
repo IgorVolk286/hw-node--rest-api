@@ -75,7 +75,7 @@ const updateSubscription = async (req, res, next) => {
     const { _id } = req.user;
     const { subscription } = req.body;
 
-    console.log(_id);
+    console.log(subscription);
     await User.findByIdAndUpdate(_id, { subscription });
     res.json({ message: "Subscription is update" });
   } catch (error) {
