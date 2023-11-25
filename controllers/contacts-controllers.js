@@ -1,6 +1,5 @@
-// const moviesServise = require("../models/contacts.js");
 const HttpErr = require("../helpers/HttpError.js");
-// const contactChema = require("../schems/contacts-schems.js");
+
 const {
   Contact,
   addContactChema,
