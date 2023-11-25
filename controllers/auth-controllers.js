@@ -40,17 +40,39 @@ const singin = async (req, res, next) => {
       throw HttpErr(401, "Email or password is wrong");
     }
 
-    const payload = {
-      id: user._id,
-    };
+    const payload = { id: user._id };
+
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "24h" });
+
+    await User.findByIdAndUpdate(user._id, { token });
 
     res.json({ token });
   } catch (error) {
     next(error);
   }
 };
+const logout = async (req, res, next) => {
+  try {
+    const { _id } = req.user;
+    await User.findByIdAndUpdate(_id, { token: " " });
+
+    res.status(204);
+  } catch (error) {
+    next(HttpErr(401));
+  }
+};
+
+const getCurrent = async (req, res, next) => {
+  const { email, subscription } = req.user;
+  res.json({
+    email,
+    subscription,
+  });
+};
+
 module.exports = {
   singup,
   singin,
+  logout,
+  getCurrent,
 };
