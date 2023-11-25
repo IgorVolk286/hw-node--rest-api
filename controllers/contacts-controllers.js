@@ -10,9 +10,14 @@ const {
 const getAllContacts = async (req, res, next) => {
   try {
     const { _id: owner } = req.user;
-    const { page = 1, limit = 20 } = req.query;
+    const { page = 1, limit = 20, favorite } = req.query;
+    console.log(favorite);
+    const find = { owner };
+    if (favorite !== undefined) {
+      find.favorite = favorite;
+    }
     const skip = (page - 1) * limit;
-    const result = await Contact.find({ owner }, "name email phone", {
+    const result = await Contact.find(find, "name email phone", {
       skip,
       limit,
     }).populate("owner", "email subscription");
@@ -26,6 +31,7 @@ const getContactById = async (req, res, next) => {
   try {
     const { _id: owner } = req.user;
     const { contactId } = req.params;
+
     const result = await Contact.findOne({ _id: contactId, owner });
     if (!result) {
       throw HttpErr(404, `Contact with id ${contactId} not found`);

@@ -12,7 +12,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Email is required"],
       unique: true,
-      // match:
+      // match:"[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"//
     },
     subscription: {
       type: String,

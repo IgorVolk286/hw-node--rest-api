@@ -70,9 +70,22 @@ const getCurrent = async (req, res, next) => {
   });
 };
 
+const updateSubscription = async (req, res, next) => {
+  try {
+    const { _id } = req.user;
+    const { subscription } = req.body;
+
+    console.log(_id);
+    await User.findByIdAndUpdate(_id, { subscription });
+    res.json({ message: "Subscription is update" });
+  } catch (error) {
+    next(HttpErr(401, "Incorrect value"));
+  }
+};
 module.exports = {
   singup,
   singin,
   logout,
   getCurrent,
+  updateSubscription,
 };
