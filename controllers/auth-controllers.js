@@ -46,7 +46,13 @@ const singin = async (req, res, next) => {
 
     await User.findByIdAndUpdate(user._id, { token });
 
-    res.json({ token });
+    res.status(200).json({
+      token,
+      user: {
+        email,
+        subscription: "starter",
+      },
+    });
   } catch (error) {
     next(error);
   }
