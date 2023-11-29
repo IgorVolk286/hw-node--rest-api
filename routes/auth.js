@@ -23,6 +23,11 @@ authRouter.post(
 authRouter.post("/logout", validToken, authControllers.logout);
 authRouter.get("/current", validToken, authControllers.getCurrent);
 authRouter.patch("/", validToken, authControllers.updateSubscription);
-// authRouter.patch("/avatars",upload.single("avatar"), validToken, authControllers.updateAvatar);
+authRouter.patch(
+  "/avatars",
+  upload.single("avatar"),
+  validToken,
+  authControllers.updateAvatar
+);
 
 module.exports = authRouter;

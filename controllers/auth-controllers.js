@@ -100,16 +100,16 @@ const updateSubscription = async (req, res, next) => {
   }
 };
 
-// const updateAvatar = async (req, res, next) => {
-//   const { path: oldPath, filename } = req.file;
-//   console.log(oldPath);
+const updateAvatar = async (req, res, next) => {
+  const { path: oldPath, filename } = req.file;
+  console.log(oldPath);
 
-//   const newPath = path.join(publicPath, filename);
-//   console.log(newPath);
+  const newPath = path.join(publicPath, filename);
+  console.log(newPath);
 
-//   await fs.rename(oldPath, newPath);
-//   const avatar = path.join("avatars", filename);
-// };
+  await fs.rename(oldPath, newPath);
+  const avatar = path.join("avatars", filename);
+};
 
 module.exports = {
   singup,
@@ -117,5 +117,5 @@ module.exports = {
   logout,
   getCurrent,
   updateSubscription,
-  // updateAvatar,
+  updateAvatar,
 };
