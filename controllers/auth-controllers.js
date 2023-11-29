@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const HttpErr = require("../helpers/HttpError.js");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const gravatar = require("gravatar");
 dotenv.config();
 const { SECRET_KEY } = process.env;
 
@@ -15,7 +16,12 @@ const singup = async (req, res, next) => {
     }
     const hashpassword = await bcrypt.hash(password, 10);
     // console.log(hashpassword);
-    const newUser = await User.create({ ...req.body, password: hashpassword });
+    const avatarURL = gravatar.url(email);
+    const newUser = await User.create({
+      ...req.body,
+      password: hashpassword,
+      avatarURL,
+    });
     res.status(201).json({
       user: {
         email: newUser.email,
@@ -51,6 +57,7 @@ const singin = async (req, res, next) => {
       user: {
         email,
         subscription: "starter",
+        avatar: user.avatarURL,
       },
     });
   } catch (error) {
