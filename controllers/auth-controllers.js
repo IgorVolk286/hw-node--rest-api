@@ -4,8 +4,12 @@ const HttpErr = require("../helpers/HttpError.js");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const gravatar = require("gravatar");
+const fs = require("fs/promises");
+const path = require("path");
 dotenv.config();
 const { SECRET_KEY } = process.env;
+
+const publicPath = path.resolve("public", "avatars");
 
 const singup = async (req, res, next) => {
   try {
@@ -95,10 +99,23 @@ const updateSubscription = async (req, res, next) => {
     next(HttpErr(401, "Incorrect value"));
   }
 };
+
+// const updateAvatar = async (req, res, next) => {
+//   const { path: oldPath, filename } = req.file;
+//   console.log(oldPath);
+
+//   const newPath = path.join(publicPath, filename);
+//   console.log(newPath);
+
+//   await fs.rename(oldPath, newPath);
+//   const avatar = path.join("avatars", filename);
+// };
+
 module.exports = {
   singup,
   singin,
   logout,
   getCurrent,
   updateSubscription,
+  // updateAvatar,
 };
