@@ -25,8 +25,8 @@ authRouter.get("/current", validToken, authControllers.getCurrent);
 authRouter.patch("/", validToken, authControllers.updateSubscription);
 authRouter.patch(
   "/avatars",
-  upload.single("avatar"),
   validToken,
+  upload.single("avatar"),
   authControllers.updateAvatar
 );
 

@@ -61,7 +61,7 @@ const singin = async (req, res, next) => {
       user: {
         email,
         subscription: "starter",
-        avatar: user.avatarURL,
+        avatarURL: user.avatarURL,
       },
     });
   } catch (error) {
@@ -101,14 +101,26 @@ const updateSubscription = async (req, res, next) => {
 };
 
 const updateAvatar = async (req, res, next) => {
-  const { path: oldPath, filename } = req.file;
-  console.log(oldPath);
+  try {
+    const { _id } = req.user;
 
-  const newPath = path.join(publicPath, filename);
-  console.log(newPath);
+    const { path: oldPath, filename } = req.file;
+    const newFilename = `${_id}_${filename}`;
 
-  await fs.rename(oldPath, newPath);
-  const avatar = path.join("avatars", filename);
+    const newPath = path.join(publicPath, newFilename);
+
+    await fs.rename(oldPath, newPath);
+
+    const avatar = path.join("avatars", newFilename);
+
+    await User.findByIdAndUpdate(_id, { avatarURL: avatar });
+
+    res.status(201).json({
+      avatarURL: `You have a new avatar ${avatar}`,
+    });
+  } catch (error) {
+    next(HttpErr(401, "Not authorized"));
+  }
 };
 
 module.exports = {
