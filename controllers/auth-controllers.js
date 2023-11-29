@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 const gravatar = require("gravatar");
 const fs = require("fs/promises");
 const path = require("path");
+const Jimp = require("jimp");
 dotenv.config();
 const { SECRET_KEY } = process.env;
 
@@ -105,7 +106,15 @@ const updateAvatar = async (req, res, next) => {
     const { _id } = req.user;
 
     const { path: oldPath, filename } = req.file;
+    console.log(req.file);
     const newFilename = `${_id}_${filename}`;
+    await Jimp.read(oldPath).then((image) => {
+      return image.resize(250, 250).grayscale().write(oldPath);
+    });
+    // const image = await Jimp.read(oldPath);
+    // console.log(image);
+    // await image.resize(250, 250).grayscale();
+    // await image.writeAsync(oldPath);
 
     const newPath = path.join(publicPath, newFilename);
 
