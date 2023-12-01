@@ -3,7 +3,7 @@ const app = require("../../app.js");
 const request = require("supertest");
 const dotenv = require("dotenv");
 dotenv.config();
-
+const { User } = require("../../models/User.js");
 const { DB_TEST_HOST, PORT } = process.env;
 
 describe("test /api/login router", () => {
@@ -27,6 +27,11 @@ describe("test /api/login router", () => {
       .post("/api/users/login")
       .send(loginData);
     expect(statusCode).toBe(200);
-    expect();
+
+    const user = await User.findOne({ email: loginData.email });
+
+    expect(loginData.email).toBe(user.email);
+    expect(typeof user.token).toBe("string");
+    expect(typeof user.subscription).toBe("string");
   });
 });
