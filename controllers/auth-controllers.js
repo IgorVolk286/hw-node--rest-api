@@ -62,7 +62,6 @@ const singin = async (req, res, next) => {
       user: {
         email,
         subscription: "starter",
-        avatarURL: user.avatarURL,
       },
     });
   } catch (error) {
@@ -104,17 +103,12 @@ const updateSubscription = async (req, res, next) => {
 const updateAvatar = async (req, res, next) => {
   try {
     const { _id } = req.user;
-
     const { path: oldPath, filename } = req.file;
     console.log(req.file);
     const newFilename = `${_id}_${filename}`;
     await Jimp.read(oldPath).then((image) => {
       return image.resize(250, 250).grayscale().write(oldPath);
     });
-    // const image = await Jimp.read(oldPath);
-    // console.log(image);
-    // await image.resize(250, 250).grayscale();
-    // await image.writeAsync(oldPath);
 
     const newPath = path.join(publicPath, newFilename);
 
