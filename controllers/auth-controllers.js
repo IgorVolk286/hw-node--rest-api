@@ -119,10 +119,10 @@ const updateAvatar = async (req, res, next) => {
     await User.findByIdAndUpdate(_id, { avatarURL: avatar });
 
     res.status(201).json({
-      avatarURL: `You have a new avatar ${avatar}`,
+      avatarURL: avatar,
     });
   } catch (error) {
-    next(HttpErr(401, "Not authorized"));
+    next(error);
   }
 };
 
