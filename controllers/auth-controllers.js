@@ -1,14 +1,16 @@
 const { User } = require("../models/User.js");
 const bcrypt = require("bcryptjs");
 const HttpErr = require("../helpers/HttpError.js");
+const sendmail = require("../helpers/sendEmail.js");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const gravatar = require("gravatar");
 const fs = require("fs/promises");
 const path = require("path");
 const Jimp = require("jimp");
+const { nanoid } = require("nanoid");
 dotenv.config();
-const { SECRET_KEY } = process.env;
+const { SECRET_KEY, BASE_URL } = process.env;
 
 const publicPath = path.resolve("public", "avatars");
 
@@ -22,11 +24,20 @@ const singup = async (req, res, next) => {
     const hashpassword = await bcrypt.hash(password, 10);
     // console.log(hashpassword);
     const avatarURL = gravatar.url(email);
+    const verificationToken = nanoid();
     const newUser = await User.create({
       ...req.body,
       password: hashpassword,
       avatarURL,
+      verificationToken,
     });
+    const veryficationMail = {
+      to: email,
+      subject: "Verification email",
+
+      html: `<a href="${BASE_URL}/api/users/verify/${verificationToken}"> Click to verify </a>`,
+    };
+    await sendmail(veryficationMail);
     res.status(201).json({
       user: {
         email: newUser.email,
@@ -37,6 +48,14 @@ const singup = async (req, res, next) => {
     next(error);
   }
 };
+
+// const veryfy = async (req, res, next) => {
+//   try {
+//     const { email } = req.body;
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 const singin = async (req, res, next) => {
   try {
@@ -133,4 +152,5 @@ module.exports = {
   getCurrent,
   updateSubscription,
   updateAvatar,
+  // veryfy,
 };
