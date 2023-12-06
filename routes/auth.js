@@ -14,7 +14,7 @@ authRouter.post(
   validateBody(userSingupSchema),
   authControllers.singup
 );
-// authRouter.get("/verify/:verificationToken",validateBody(userVeryfySchema) authControllers.veryfy);
+authRouter.get("/verify/:verificationToken", authControllers.verify);
 
 authRouter.post(
   "/login",

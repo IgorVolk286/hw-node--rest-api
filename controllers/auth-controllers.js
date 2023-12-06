@@ -49,13 +49,26 @@ const singup = async (req, res, next) => {
   }
 };
 
-// const veryfy = async (req, res, next) => {
-//   try {
-//     const { email } = req.body;
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+const verify = async (req, res, next) => {
+  try {
+    const { verificationToken } = req.params;
+
+    const user = await User.findOne({ verificationToken });
+    if (!user) {
+      throw HttpErr(404, "User not found");
+    }
+
+    await User.findOneAndUpdate(user._id, {
+      verify: true,
+      verificationToken: " ",
+    });
+    res.status(200).json({
+      message: "Verification successful",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const singin = async (req, res, next) => {
   try {
@@ -63,6 +76,9 @@ const singin = async (req, res, next) => {
     const user = await User.findOne({ email });
     if (!user) {
       throw HttpErr(401, "Email or password is wrong");
+    }
+    if (!user.verify) {
+      throw HttpErr(401, "Email not verify");
     }
     const passwordCompare = await bcrypt.compare(password, user.password);
     // console.log(passwordCompare);
@@ -152,5 +168,5 @@ module.exports = {
   getCurrent,
   updateSubscription,
   updateAvatar,
-  // veryfy,
+  verify,
 };
