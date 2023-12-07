@@ -2,7 +2,11 @@ const express = require("express");
 const isEmptyBody = require("../middlewars/isEmptyBody.js");
 const validateBody = require("../helpers/validationBody.js");
 const authControllers = require("../controllers/auth-controllers.js");
-const { userSingupSchema, userSinginSchema } = require("../models/User.js");
+const {
+  userSingupSchema,
+  userSinginSchema,
+  userVerifySchema,
+} = require("../models/User.js");
 const validToken = require("../middlewars/validToken.js");
 const upload = require("../middlewars/upload.js");
 
@@ -14,7 +18,13 @@ authRouter.post(
   validateBody(userSingupSchema),
   authControllers.singup
 );
-authRouter.get("/verify/:verificationToken", authControllers.verify);
+authRouter.get("/verify/:verificationToken", authControllers.verifyToken);
+authRouter.post(
+  "/verify",
+  isEmptyBody,
+  validateBody(userVerifySchema),
+  authControllers.verifyEmail
+);
 
 authRouter.post(
   "/login",

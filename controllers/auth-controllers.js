@@ -49,7 +49,7 @@ const singup = async (req, res, next) => {
   }
 };
 
-const verify = async (req, res, next) => {
+const verifyToken = async (req, res, next) => {
   try {
     const { verificationToken } = req.params;
 
@@ -64,6 +64,30 @@ const verify = async (req, res, next) => {
     });
     res.status(200).json({
       message: "Verification successful",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const verifyEmail = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw HttpErr(404, "User not found");
+    }
+    if (user.verify) {
+      throw HttpErr(400, "Verification has already been passed");
+    }
+    const veryficationMail = {
+      to: email,
+      subject: "Verification email",
+
+      html: `<a href="${BASE_URL}/api/users/verify/${user.verificationToken}"> Click to verify </a>`,
+    };
+    await sendmail(veryficationMail);
+    res.status(200).json({
+      message: "Verification email sent",
     });
   } catch (error) {
     next(error);
@@ -168,5 +192,6 @@ module.exports = {
   getCurrent,
   updateSubscription,
   updateAvatar,
-  verify,
+  verifyToken,
+  verifyEmail,
 };

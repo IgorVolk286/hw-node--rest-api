@@ -47,6 +47,9 @@ const userSinginSchema = Joi.object({
   email: Joi.string().required(),
   password: Joi.string().min(6).required(),
 });
+const userVerifySchema = Joi.object({
+  email: Joi.string().required(),
+});
 
 userSchema.post("save", (error, data, next) => {
   const { name, code } = error;
@@ -71,4 +74,5 @@ module.exports = {
   User,
   userSingupSchema,
   userSinginSchema,
+  userVerifySchema,
 };
