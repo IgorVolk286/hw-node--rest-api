@@ -19,7 +19,7 @@ const singup = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (user) {
-      throw HttpErr(409, "Email in use");
+      throw HttpErr("409", "Email in use");
     }
     const hashpassword = await bcrypt.hash(password, 10);
     // console.log(hashpassword);
